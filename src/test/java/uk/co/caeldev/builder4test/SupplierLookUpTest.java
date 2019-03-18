@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.org.fyodor.generators.RDG.string;
 
-class RandomLookUpTest {
+class SupplierLookUpTest {
 
 
     @Test
@@ -18,7 +18,7 @@ class RandomLookUpTest {
     public void shouldLookupARandomValue() {
         //Given
         Field<String> field = new Field<>();
-        RandomLookUp lookUp = new RandomLookUp(Maps.newHashMap(), ImmutableMap.of(field, string()));
+        SupplierLookUp lookUp = new SupplierLookUp(Maps.newHashMap(), ImmutableMap.of(field, () -> string().next()));
 
         //When
         String result1 = lookUp.get(field);
@@ -37,8 +37,8 @@ class RandomLookUpTest {
         //Given
         Field<String> field1 = new Field<>();
         Field<String> field2 = new Field<>();
-        RandomLookUp lookUp = new RandomLookUp(ImmutableMap.of(field1, Optional.of("test")),
-                ImmutableMap.of(field2, string()));
+        SupplierLookUp lookUp = new SupplierLookUp(ImmutableMap.of(field1, Optional.of("test")),
+                ImmutableMap.of(field2, () -> string().next()));
 
         //When
         String result1 = lookUp.get(field1);
@@ -57,8 +57,8 @@ class RandomLookUpTest {
     public void shouldLookupConstantValueOverridesRandomValueForDoubleDefinition() {
         //Given
         Field<String> field1 = new Field<>();
-        RandomLookUp lookUp = new RandomLookUp(ImmutableMap.of(field1, Optional.of("test")),
-                ImmutableMap.of(field1, string()));
+        SupplierLookUp lookUp = new SupplierLookUp(ImmutableMap.of(field1, Optional.of("test")),
+                ImmutableMap.of(field1, () -> string().next()));
 
         //When
         String result1 = lookUp.get(field1);
@@ -73,7 +73,7 @@ class RandomLookUpTest {
     public void shouldLookupForDefaultValueWhenThereIsNoValue() {
         //Given
         Field<String> field1 = new Field<>();
-        RandomLookUp lookUp = new RandomLookUp(Maps.newHashMap(), Maps.newHashMap());
+        SupplierLookUp lookUp = new SupplierLookUp(Maps.newHashMap(), Maps.newHashMap());
 
         //When
         String result1 = lookUp.get(field1, "test");
@@ -87,7 +87,7 @@ class RandomLookUpTest {
     public void shouldLookupForNullWhenThereIsNullValueSet() {
         //Given
         Field<String> field1 = new Field<>();
-        RandomLookUp lookUp = new RandomLookUp(ImmutableMap.of(field1, Optional.empty()), Maps.newHashMap());
+        SupplierLookUp lookUp = new SupplierLookUp(ImmutableMap.of(field1, Optional.empty()), Maps.newHashMap());
 
         //When
         String result1 = lookUp.get(field1, "test");
@@ -101,7 +101,7 @@ class RandomLookUpTest {
     public void shouldLookupForEmptyWhenThereIsEmptyValueSet() {
         //Given
         Field<String> field1 = new Field<>();
-        RandomLookUp lookUp = new RandomLookUp(ImmutableMap.of(field1, Optional.of("")), Maps.newHashMap());
+        SupplierLookUp lookUp = new SupplierLookUp(ImmutableMap.of(field1, Optional.of("")), Maps.newHashMap());
 
         //When
         String result1 = lookUp.get(field1, "test");
@@ -115,7 +115,7 @@ class RandomLookUpTest {
     public void shouldLookupForValueInsertedByUsingPut() {
         //Given
         Field<String> field1 = new Field<>();
-        RandomLookUp lookUp = new RandomLookUp(Maps.newHashMap(), Maps.newHashMap());
+        SupplierLookUp lookUp = new SupplierLookUp(Maps.newHashMap(), Maps.newHashMap());
 
         //And
         lookUp.put(field1, "");

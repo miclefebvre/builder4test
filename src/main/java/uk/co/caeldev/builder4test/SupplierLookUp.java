@@ -1,21 +1,20 @@
 package uk.co.caeldev.builder4test;
 
-import uk.org.fyodor.generators.Generator;
-
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class RandomLookUp extends LookUp {
+public class SupplierLookUp extends LookUp {
 
     private Map<Field, Optional> values;
-    private Map<Field, Generator> generators;
+    private Map<Field, Supplier> suppliers;
 
-    protected RandomLookUp(Map<Field, Optional> values, Map<Field, Generator> generators) {
+    protected SupplierLookUp(Map<Field, Optional> values, Map<Field, Supplier> suppliers) {
         this.values = values;
-        this.generators = generators;
+        this.suppliers = suppliers;
     }
 
     @Override
@@ -28,10 +27,10 @@ public class RandomLookUp extends LookUp {
         Optional optValue = values.get(field);
 
         if (isNull(optValue)) {
-            Generator generator = generators.get(field);
+            Supplier supplier = suppliers.get(field);
 
-            if (nonNull(generator)) {
-                return (V)generator.next();
+            if (nonNull(supplier)) {
+                return (V)supplier.get();
             }
 
             return defaultValue;

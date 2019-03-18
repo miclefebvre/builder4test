@@ -7,9 +7,19 @@ import uk.co.caeldev.builder4test.Builder;
 import uk.co.caeldev.builder4test.impl.Pojo;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.co.caeldev.builder4test.impl.PojoBuilder.*;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.creator;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.creatorWithPredefinedCreatorDefaults;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.creatorWithPredefinedDefaults;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.name;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.name2;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.testValue;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.value;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.value2;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.valueCreator;
+import static uk.co.caeldev.builder4test.impl.PojoBuilder.valueTestCreator;
 import static uk.org.fyodor.generators.RDG.string;
 
 public class BuilderIntegrationTest {
@@ -180,11 +190,13 @@ public class BuilderIntegrationTest {
             int size = 2;
 
             //When
+            Supplier<String> stringSupplier = () -> string().next();
+
             List<Pojo> testSimple = Builder.build()
                     .list(creator)
                     .size(size)
-                    .override(name, string())
-                    .override(value, string())
+                    .override(name, stringSupplier)
+                    .override(value, stringSupplier)
                     .get();
 
             //Then

@@ -1,11 +1,10 @@
 package uk.co.caeldev.builder4test;
 
-import uk.org.fyodor.generators.Generator;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -13,14 +12,14 @@ public class FixedSizeListBuilder<K> implements OverrideField<FixedSizeListBuild
 
     private final int size;
     private final Creator<K> creator;
-    private final Map<Field, Generator> generators;
+    private final Map<Field, Supplier> suppliers;
     private final Map<Field, Optional> values;
 
     private FixedSizeListBuilder(int size, Creator<K> creator) {
         this.size = size;
         this.creator = creator;
         values = new HashMap<>();
-        generators = new HashMap<>();
+        suppliers = new HashMap<>();
 
     }
 
@@ -28,8 +27,8 @@ public class FixedSizeListBuilder<K> implements OverrideField<FixedSizeListBuild
         return new FixedSizeListBuilder<>(size, creator);
     }
 
-    public <U> FixedSizeListBuilder<K> override(Field<U> field, Generator<U> generator) {
-        generators.put(field, generator);
+    public <U> FixedSizeListBuilder<K> override(Field<U> field, Supplier<U> supplier) {
+        suppliers.put(field, supplier);
         return this;
     }
 
@@ -46,7 +45,7 @@ public class FixedSizeListBuilder<K> implements OverrideField<FixedSizeListBuild
     }
 
     public List<K> get() {
-        LookUp lookUp = new RandomLookUp(values, generators);
+        LookUp lookUp = new SupplierLookUp(values, suppliers);
         return IntStream.rangeClosed(1, size)
                 .mapToObj(it -> EntityBuilder.entityBuilder(creator, lookUp).get())
                 .collect(Collectors.toList());
